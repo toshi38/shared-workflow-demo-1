@@ -1,0 +1,22 @@
+name: Hello Action
+description: A shared action that prints hello to someone.
+inputs:
+  who:
+    description: |
+      Who this action should say hello to.
+    required: true
+
+outputs:
+  message:
+    description: Full output message
+    value: ${{ steps.print_message.outputs.message }}
+
+runs:
+  using: composite
+  steps:
+    - name: Say Hello
+      shell: bash
+      run: |
+        MESSAGE=$(echo "Hello ${{ inputs.who }}")
+        echo "$MESSAGE"
+        echo "message=$MESSAGE" >> $GITHUB_OUTPUT
