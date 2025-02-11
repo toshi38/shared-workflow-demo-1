@@ -1,0 +1,30 @@
+name: Use shared composite
+on:
+  workflow_call:
+    inputs:
+      who:
+        description: Who to say hello to using shared composite action
+        required: true
+        type: string
+      ref:
+        type: string
+        required: true
+        description: The ref of the shared workflow
+jobs:
+  say_hello:
+    name: Use Composite action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            actions
+          repository: "toshi38/shared-workflow-demo-1"
+          # We want to avoid accepting a ref here, but without it we don't know how to checkout the shared action which is the same version as the shared workflow
+          ref: "${{ inputs.ref }}"
+          path: ".github/workflows/toshi38/shared-workflow-demo-1"
+
+      - uses: "./.github/workflows/toshi38/shared-workflow-demo-1/actions/shared"
+        with:
+          who: ${{inputs.who}}
